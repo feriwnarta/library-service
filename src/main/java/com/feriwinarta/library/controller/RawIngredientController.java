@@ -18,7 +18,7 @@ public class RawIngredientController {
     @PostMapping("/raw-ingredients")
     @ResponseStatus(HttpStatus.CREATED)
     public WebResponse<RawIngredientResponse> create(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             @ModelAttribute @Valid CreateRawIngredientRequest request
     ) {
 

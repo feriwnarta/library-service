@@ -75,4 +75,34 @@ public class RawIngredientControllerTest extends BaseTestContainerPostgres {
         response.then().body("data.name", equalTo("Tepung"));
         response.then().body("data.code", equalTo("CODE"));
     }
+
+
+    @Test
+    @SneakyThrows
+    void givenRawIngredientWithoutImage_whenSaveRawIngredient_thenHappyPath() {
+
+        Unit unit = unitRepository.findAll().stream().findFirst().orElseThrow();
+        Category category = categoryRepository.findAll().stream().findFirst().orElseThrow();
+
+        Response response = RestAssured.given()
+                .request()
+                .multiPart("code", "CODE")
+                .multiPart("name", "Tepung")
+                .multiPart("branchId", "1")
+                .multiPart("categoryId", category.getId())
+                .multiPart("unitId", unit.getId())
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .when()
+                .post("/ingredients/raw-ingredients")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .response();
+
+        Assertions.assertNotNull(response);
+
+        // Validasi respons
+        response.then().body("data.name", equalTo("Tepung"));
+        response.then().body("data.code", equalTo("CODE"));
+    }
 }

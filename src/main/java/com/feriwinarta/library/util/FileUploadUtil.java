@@ -41,7 +41,7 @@ public class FileUploadUtil {
     /**
      * Saves a multipart file to the specified location.
      *
-     * @param location the directory to save the file
+     * @param location      the directory to save the file
      * @param multipartFile the file to save
      * @return the unique file code with its extension
      * @throws IOException if an I/O error occurs
@@ -49,7 +49,7 @@ public class FileUploadUtil {
     @SneakyThrows
     public static String saveFile(String location, MultipartFile multipartFile) {
 
-        if(multipartFile.isEmpty()) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
 
@@ -73,7 +73,7 @@ public class FileUploadUtil {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             Path filePath = uploadPath.resolve(storedFileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-            log.info("File saved: {}", filePath.toString());
+            log.info("File saved: {}", filePath);
         } catch (IOException ioe) {
             log.error("Could not save file: {}", originalFilename);
             log.error(ioe.getMessage(), ioe);
