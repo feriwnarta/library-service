@@ -1,4 +1,4 @@
 package com.feriwinarta.library.model;
 
-public class BranchResponse {
+public class CreateBranchResponse {
 }

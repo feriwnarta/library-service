@@ -1,7 +1,7 @@
 package com.feriwinarta.library.controller;
 
 import com.feriwinarta.library.model.CreateSemiFinishRequest;
-import com.feriwinarta.library.model.SemiFinishResponse;
+import com.feriwinarta.library.model.CreateSemiFinishResponse;
 import com.feriwinarta.library.model.WebResponse;
 import com.feriwinarta.library.service.SemiFinishService;
 import jakarta.annotation.Nullable;
@@ -18,15 +18,15 @@ public class SemiFinishController {
     private final SemiFinishService semiFinishService;
 
     @PostMapping(
-            value = "/semi-finish-ingredients",
+            value = "ingredients/semi-finish-ingredients",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<SemiFinishResponse> create(
+    public WebResponse<CreateSemiFinishResponse> create(
             @RequestParam("image") @Nullable MultipartFile image,
             @ModelAttribute @Valid CreateSemiFinishRequest request
     ) {
-        return WebResponse.<SemiFinishResponse>builder()
+        return WebResponse.<CreateSemiFinishResponse>builder()
                 .data(semiFinishService.create(image, request))
                 .build();
     }

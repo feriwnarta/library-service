@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Data
 @Getter
 @Setter
-public class RawIngredientResponse {
+public class CreateRawIngredientResponse {
     private String id;
     private String code;
     private String name;

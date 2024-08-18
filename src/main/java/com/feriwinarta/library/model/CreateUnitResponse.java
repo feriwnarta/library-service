@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CategoryResponse {
+@AllArgsConstructor
+@Builder
+public class CreateUnitResponse {
     private String id;
-    private String code;
     private String name;
+    private String code;
 }

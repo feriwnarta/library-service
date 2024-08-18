@@ -1,9 +1,9 @@
 package com.feriwinarta.library.service;
 
 import com.feriwinarta.library.model.CreateRawIngredientRequest;
-import com.feriwinarta.library.model.RawIngredientResponse;
+import com.feriwinarta.library.model.CreateRawIngredientResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface RawIngredientService {
-    RawIngredientResponse create(MultipartFile image, CreateRawIngredientRequest request);
+    CreateRawIngredientResponse create(MultipartFile image, CreateRawIngredientRequest request);
 }

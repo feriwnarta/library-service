@@ -41,7 +41,7 @@ public class CategoryControllerTest extends BaseTestContainerPostgres {
                 .body(mapper.writeValueAsString(request))
                 .contentType(ContentType.JSON)
                 .when()
-                .post("/ingredients/categories")
+                .post("library/ingredients/categories")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("data.code", Matchers.equalTo("CATEGORY01"))
@@ -66,7 +66,7 @@ public class CategoryControllerTest extends BaseTestContainerPostgres {
                 .body(mapper.writeValueAsString(request))
                 .contentType(ContentType.JSON)
                 .when()
-                .post("/ingredients/categories")
+                .post("library/ingredients/categories")
                 .then()
                 .statusCode(HttpStatus.CONFLICT.value())
                 .body("error", Matchers.equalTo("The code already exists"));
@@ -85,7 +85,7 @@ public class CategoryControllerTest extends BaseTestContainerPostgres {
                 .body(mapper.writeValueAsString(request))
                 .contentType(ContentType.JSON)
                 .when()
-                .post("/ingredients/categories")
+                .post("library/ingredients/categories")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
         // .body("errors", Matchers.equalTo(List.of("code must not be empty", "code must not be blank"))); // disable cause position error message dynamically changes

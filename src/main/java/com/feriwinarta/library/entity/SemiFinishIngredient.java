@@ -21,5 +21,4 @@ public class SemiFinishIngredient extends Ingredient {
     @ManyToOne
     @JoinColumn(nullable = true)
     private SemiFinishRecipe semiFinishRecipe;
-    // Todo Implement stock raw
 }

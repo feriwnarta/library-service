@@ -1,7 +1,7 @@
 package com.feriwinarta.library.services;
 
-import com.feriwinarta.library.model.CategoryResponse;
 import com.feriwinarta.library.model.CreateCategoryRequest;
+import com.feriwinarta.library.model.CreateCategoryResponse;
 import com.feriwinarta.library.service.CategoryService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,13 +28,13 @@ public class CategoryServiceTest {
 
     @Test
     void givenCategory_whenSaveCategory_thenReturnCategory() {
-        Mockito.when(categoryService.create(any(CreateCategoryRequest.class))).thenReturn(CategoryResponse.builder()
+        Mockito.when(categoryService.create(any(CreateCategoryRequest.class))).thenReturn(CreateCategoryResponse.builder()
                 .id("1")
                 .code("code")
                 .name("name")
                 .build());
 
-        CategoryResponse categoryResponse = categoryService.create(createCategoryRequest);
+        CreateCategoryResponse categoryResponse = categoryService.create(createCategoryRequest);
 
         Mockito.verify(categoryService, Mockito.times(1)).create(any(CreateCategoryRequest.class));
 

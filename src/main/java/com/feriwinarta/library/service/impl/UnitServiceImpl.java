@@ -3,14 +3,12 @@ package com.feriwinarta.library.service.impl;
 import com.feriwinarta.library.entity.Unit;
 import com.feriwinarta.library.exception.ResourceNotFoundException;
 import com.feriwinarta.library.model.CreateUnitRequest;
-import com.feriwinarta.library.model.UnitResponse;
+import com.feriwinarta.library.model.CreateUnitResponse;
 import com.feriwinarta.library.repository.UnitRepository;
 import com.feriwinarta.library.service.UnitService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UnitServiceImpl implements UnitService {
@@ -18,7 +16,7 @@ public class UnitServiceImpl implements UnitService {
     private UnitRepository unitRepository;
 
     @Override
-    public UnitResponse create(CreateUnitRequest request) {
+    public CreateUnitResponse create(CreateUnitRequest request) {
 
         Unit unit = new Unit();
         unit.setName(request.getName());
@@ -26,19 +24,19 @@ public class UnitServiceImpl implements UnitService {
 
         Unit unitSaved = unitRepository.save(unit);
 
-        return UnitResponse.builder()
+        return CreateUnitResponse.builder()
                 .name(unitSaved.getName())
                 .code(unitSaved.getCode())
                 .build();
     }
 
     @Override
-    public UnitResponse get(String id) {
+    public CreateUnitResponse get(String id) {
 
         Unit unit = unitRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
 
-        return UnitResponse
+        return CreateUnitResponse
                 .builder()
                 .id(unit.getId())
                 .code(unit.getCode())

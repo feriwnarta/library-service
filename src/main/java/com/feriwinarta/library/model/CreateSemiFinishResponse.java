@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SemiFinishResponse {
+public class CreateSemiFinishResponse {
     private String id;
     private String code;
     private String name;

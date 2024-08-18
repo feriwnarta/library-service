@@ -34,6 +34,9 @@ public class RawIngredientControllerTest extends BaseTestContainerPostgres {
     void setUp() {
         super.setUp();
         rawIngredientRepository.deleteAll();
+        unitRepository.deleteAll();
+        categoryRepository.deleteAll();
+
         unitRepository.save(Unit.builder()
                 .code("01")
                 .name("KG")
@@ -44,6 +47,7 @@ public class RawIngredientControllerTest extends BaseTestContainerPostgres {
                 .build());
 
     }
+
 
     @Test
     @SneakyThrows
@@ -63,7 +67,7 @@ public class RawIngredientControllerTest extends BaseTestContainerPostgres {
                 .multiPart("unitId", unit.getId())
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .when()
-                .post("/ingredients/raw-ingredients")
+                .post("library/ingredients/raw-ingredients")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -93,7 +97,7 @@ public class RawIngredientControllerTest extends BaseTestContainerPostgres {
                 .multiPart("unitId", unit.getId())
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .when()
-                .post("/ingredients/raw-ingredients")
+                .post("library/ingredients/raw-ingredients")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -104,5 +108,25 @@ public class RawIngredientControllerTest extends BaseTestContainerPostgres {
         // Validasi respons
         response.then().body("data.name", equalTo("Tepung"));
         response.then().body("data.code", equalTo("CODE"));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenRawIngredientWithoutMandatoryField_whenSaveRawIngredient_thenReturnException() {
+
+        Response response = RestAssured.given()
+                .request()
+                .multiPart("code", "CODE")
+                .multiPart("name", "Tepung")
+                .multiPart("branchId", "1")
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .when()
+                .post("library/ingredients/raw-ingredients")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .response();
+
+        Assertions.assertNotNull(response);
     }
 }

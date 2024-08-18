@@ -1,8 +1,8 @@
 package com.feriwinarta.library.service;
 
 import com.feriwinarta.library.model.CreateSemiFinishRecipeRequest;
-import com.feriwinarta.library.model.SemiFinishRecipeResponse;
+import com.feriwinarta.library.model.CreateSemiFinishRecipeResponse;
 
 public interface SemiFinishRecipeService {
-    SemiFinishRecipeResponse create(CreateSemiFinishRecipeRequest request);
+    CreateSemiFinishRecipeResponse create(CreateSemiFinishRecipeRequest request);
 }

@@ -1,7 +1,7 @@
 package com.feriwinarta.library.controller;
 
 import com.feriwinarta.library.model.CreateRawIngredientRequest;
-import com.feriwinarta.library.model.RawIngredientResponse;
+import com.feriwinarta.library.model.CreateRawIngredientResponse;
 import com.feriwinarta.library.model.WebResponse;
 import com.feriwinarta.library.service.RawIngredientService;
 import jakarta.validation.Valid;
@@ -15,14 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class RawIngredientController {
     private final RawIngredientService rawIngredientService;
 
-    @PostMapping("/raw-ingredients")
+    @PostMapping("ingredients/raw-ingredients")
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<RawIngredientResponse> create(
+    public WebResponse<CreateRawIngredientResponse> create(
             @RequestParam(value = "image", required = false) MultipartFile image,
             @ModelAttribute @Valid CreateRawIngredientRequest request
     ) {
 
-        return WebResponse.<RawIngredientResponse>builder()
+        return WebResponse.<CreateRawIngredientResponse>builder()
                 .data(rawIngredientService.create(image, request))
                 .build();
     }

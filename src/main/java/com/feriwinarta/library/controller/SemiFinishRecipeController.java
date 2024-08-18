@@ -1,7 +1,7 @@
 package com.feriwinarta.library.controller;
 
 import com.feriwinarta.library.model.CreateSemiFinishRecipeRequest;
-import com.feriwinarta.library.model.SemiFinishRecipeResponse;
+import com.feriwinarta.library.model.CreateSemiFinishRecipeResponse;
 import com.feriwinarta.library.model.WebResponse;
 import com.feriwinarta.library.service.SemiFinishRecipeService;
 import jakarta.validation.Valid;
@@ -19,15 +19,15 @@ public class SemiFinishRecipeController {
     private SemiFinishRecipeService semiFinishRecipeService;
 
     @PostMapping(
-            value = "/semi-finish-ingredients/recipes",
+            value = "ingredients/semi-finish-ingredients/recipes",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<SemiFinishRecipeResponse> create(
+    public WebResponse<CreateSemiFinishRecipeResponse> create(
             @Valid CreateSemiFinishRecipeRequest request
     ) {
-        return WebResponse.<SemiFinishRecipeResponse>builder()
+        return WebResponse.<CreateSemiFinishRecipeResponse>builder()
                 .data(semiFinishRecipeService.create(request))
                 .build();
     }

@@ -6,7 +6,7 @@ import com.feriwinarta.library.entity.SemiFinishRecipe;
 import com.feriwinarta.library.entity.SemiFinishRecipeIngredient;
 import com.feriwinarta.library.exception.ResourceNotFoundException;
 import com.feriwinarta.library.model.CreateSemiFinishRecipeRequest;
-import com.feriwinarta.library.model.SemiFinishRecipeResponse;
+import com.feriwinarta.library.model.CreateSemiFinishRecipeResponse;
 import com.feriwinarta.library.repository.SemiFinishIngredientRepository;
 import com.feriwinarta.library.repository.SemiFinishRecipeIngredientRepository;
 import com.feriwinarta.library.repository.SemiFinishRecipeRepository;
@@ -33,7 +33,7 @@ public class SemiFinishRecipeServiceImpl implements SemiFinishRecipeService {
 
     @Override
     @Transactional
-    public SemiFinishRecipeResponse create(CreateSemiFinishRecipeRequest request) {
+    public CreateSemiFinishRecipeResponse create(CreateSemiFinishRecipeRequest request) {
         validateExistingSemiFinishIngredient(request.getSemiFinishIngredientId());
 
         // create recipe
@@ -66,7 +66,7 @@ public class SemiFinishRecipeServiceImpl implements SemiFinishRecipeService {
 
         semiFinishRecipeIngredientRepository.saveAll(semiFinishRecipeIngredients);
 
-        return SemiFinishRecipeResponse.builder()
+        return CreateSemiFinishRecipeResponse.builder()
                 .id(semiFinishRecipe.getId())
                 .build();
     }

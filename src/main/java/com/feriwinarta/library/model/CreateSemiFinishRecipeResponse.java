@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class SemiFinishRecipeResponse {
+public class CreateSemiFinishRecipeResponse {
     private String id;
 }

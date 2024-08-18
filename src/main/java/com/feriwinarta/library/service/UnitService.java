@@ -1,9 +1,10 @@
 package com.feriwinarta.library.service;
 
 import com.feriwinarta.library.model.CreateUnitRequest;
-import com.feriwinarta.library.model.UnitResponse;
+import com.feriwinarta.library.model.CreateUnitResponse;
 
 public interface UnitService {
-    UnitResponse create(CreateUnitRequest request);
-    UnitResponse get(String id);
+    CreateUnitResponse create(CreateUnitRequest request);
+
+    CreateUnitResponse get(String id);
 }

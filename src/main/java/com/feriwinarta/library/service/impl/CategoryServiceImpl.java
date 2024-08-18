@@ -1,8 +1,8 @@
 package com.feriwinarta.library.service.impl;
 
 import com.feriwinarta.library.entity.Category;
-import com.feriwinarta.library.model.CategoryResponse;
 import com.feriwinarta.library.model.CreateCategoryRequest;
+import com.feriwinarta.library.model.CreateCategoryResponse;
 import com.feriwinarta.library.repository.CategoryRepository;
 import com.feriwinarta.library.service.CategoryService;
 import jakarta.transaction.Transactional;
@@ -16,14 +16,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public CategoryResponse create(CreateCategoryRequest request) {
+    public CreateCategoryResponse create(CreateCategoryRequest request) {
         Category entity = new Category();
         entity.setName(request.getName());
         entity.setCode(request.getCode());
 
         Category category = categoryRepository.save(entity);
 
-        return CategoryResponse.builder()
+        return CreateCategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .code(category.getCode())

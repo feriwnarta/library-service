@@ -5,7 +5,7 @@ import com.feriwinarta.library.entity.SemiFinishIngredient;
 import com.feriwinarta.library.entity.Unit;
 import com.feriwinarta.library.exception.ResourceNotFoundException;
 import com.feriwinarta.library.model.CreateSemiFinishRequest;
-import com.feriwinarta.library.model.SemiFinishResponse;
+import com.feriwinarta.library.model.CreateSemiFinishResponse;
 import com.feriwinarta.library.repository.CategoryRepository;
 import com.feriwinarta.library.repository.SemiFinishIngredientRepository;
 import com.feriwinarta.library.repository.UnitRepository;
@@ -30,7 +30,7 @@ public class SemiFinishServiceImpl implements SemiFinishService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public SemiFinishResponse create(MultipartFile image, CreateSemiFinishRequest request) {
+    public CreateSemiFinishResponse create(MultipartFile image, CreateSemiFinishRequest request) {
         // handle save file
         String imageName = FileUploadUtil.saveFile(fileUploadLocation, image);
 
@@ -52,7 +52,7 @@ public class SemiFinishServiceImpl implements SemiFinishService {
         // save
         SemiFinishIngredient finishIngredient = semiFinishRepository.save(ingredient);
 
-        return SemiFinishResponse.builder()
+        return CreateSemiFinishResponse.builder()
                 .id(finishIngredient.getId())
                 .image(finishIngredient.getImage())
                 .name(finishIngredient.getName())

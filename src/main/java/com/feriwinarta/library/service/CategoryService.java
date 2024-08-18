@@ -1,8 +1,8 @@
 package com.feriwinarta.library.service;
 
-import com.feriwinarta.library.model.CategoryResponse;
 import com.feriwinarta.library.model.CreateCategoryRequest;
+import com.feriwinarta.library.model.CreateCategoryResponse;
 
 public interface CategoryService {
-    CategoryResponse create(CreateCategoryRequest request);
+    CreateCategoryResponse create(CreateCategoryRequest request);
 }

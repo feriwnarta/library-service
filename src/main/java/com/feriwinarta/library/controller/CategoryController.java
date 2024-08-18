@@ -1,7 +1,7 @@
 package com.feriwinarta.library.controller;
 
-import com.feriwinarta.library.model.CategoryResponse;
 import com.feriwinarta.library.model.CreateCategoryRequest;
+import com.feriwinarta.library.model.CreateCategoryResponse;
 import com.feriwinarta.library.model.WebResponse;
 import com.feriwinarta.library.service.CategoryService;
 import jakarta.validation.Valid;
@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @PostMapping(value = "/categories",
+    @PostMapping(value = "ingredients/categories",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<CategoryResponse> create(
+    public WebResponse<CreateCategoryResponse> create(
             @RequestBody @Valid CreateCategoryRequest request
     ) {
-        return WebResponse.<CategoryResponse>builder().data(categoryService.create(request)).build();
+        return WebResponse.<CreateCategoryResponse>builder().data(categoryService.create(request)).build();
     }
 }

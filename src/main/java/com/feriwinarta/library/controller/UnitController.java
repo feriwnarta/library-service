@@ -1,13 +1,12 @@
 package com.feriwinarta.library.controller;
 
-import com.feriwinarta.library.entity.Unit;
-import com.feriwinarta.library.model.*;
-import com.feriwinarta.library.service.CategoryService;
+import com.feriwinarta.library.model.CreateUnitRequest;
+import com.feriwinarta.library.model.CreateUnitResponse;
+import com.feriwinarta.library.model.WebResponse;
 import com.feriwinarta.library.service.UnitService;
 import jakarta.validation.Valid;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +17,15 @@ public class UnitController {
     @Setter(onMethod = @__({@Autowired}))
     private UnitService unitService;
 
-    @PostMapping(value = "/units",
+    @PostMapping(value = "ingredients/units",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<UnitResponse> create(
+    public WebResponse<CreateUnitResponse> create(
             @RequestBody @Valid CreateUnitRequest request
     ) {
-        return WebResponse.<UnitResponse>builder()
+        return WebResponse.<CreateUnitResponse>builder()
                 .data(unitService.create(request))
                 .build();
     }
@@ -36,8 +35,8 @@ public class UnitController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.OK)
-    public WebResponse<UnitResponse> get(@PathVariable("unitId") String unitId) {
-        return WebResponse.<UnitResponse>builder()
+    public WebResponse<CreateUnitResponse> get(@PathVariable("unitId") String unitId) {
+        return WebResponse.<CreateUnitResponse>builder()
                 .data(unitService.get(unitId))
                 .build();
     }
