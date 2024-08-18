@@ -1,0 +1,1635 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SENJA POS API",
+    "description": "LIST OF API SENJA POS",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{environment}.localhost:8000/{version}",
+      "variables": {
+        "environment": {
+          "default": "dev",
+          "enum": [
+            "dev",
+            "prod"
+          ]
+        },
+        "version": {
+          "description": "api version",
+          "default": "v1",
+          "enum": [
+            "v1"
+          ]
+        }
+      }
+    }
+  ],
+  "components": {
+    "parameters": {
+      "authorization": {
+        "description": "Token yang perlu dikirim untuk mengakses resources",
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "token": {
+            "value": "65as4d65as4d56a"
+          }
+        }
+      }
+    },
+    "responses": {
+      "400Ingredients": {
+        "description": "gagal buat ingredients (raw / semi), dikarenakan kesalahan validasi request body",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            },
+            "examples": {
+              "failed validation": {
+                "summary": "validation error",
+                "description": "kesalahan untuk client jika validation tidak berhasil, pastikan schema request body sudah sesuai.",
+                "value": {
+                  "errors": {
+                    "code": [
+                      "The code field must be at least 5 characters."
+                    ],
+                    "unit_id": [
+                      "The unit_id field is required."
+                    ],
+                    "category_id": [
+                      "The category_id is not found"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401Unauthorized": {
+        "description": "Gagal mengakses resource saat user tidak mengirim token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "data tidak ada saat dicari": {
+                "summary": "failed",
+                "value": {
+                  "errors": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/ingredients/raws": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Menampilkan daftar raw ingredients",
+        "description": "Menampilkan daftar dari raw ingredient, serta menerapkan fitur searching",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "Mengambil semua data raw ingredients dengan fitur searching",
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "cari berdasarkan nama": {
+                "value": "Daging ayam"
+              },
+              "cari berdasarkan kategori": {
+                "value": "Meat"
+              },
+              "cari berdasarkan code": {
+                "value": "RAWINGR0001"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response berhasil dapatkan data raw ingredients, response menggunakan pencarian atau tanpa pencarian sama",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "examples": {
+                  "success tanpa search": {
+                    "summary": "Contoh berhasil tanpa search",
+                    "description": "Berhasil dapatkan semua data raw ingredient tanpa search",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "uuid",
+                          "name": "Daging ayam",
+                          "category": "Meat",
+                          "unit": "Gram (GR)",
+                          "in_stock": "2000",
+                          "minimum_stock": "1000",
+                          "average_cost": "Rp. 400,00",
+                          "placements": [
+                            "Central Kitchen",
+                            "Outlet Cahaya Senja PIK"
+                          ]
+                        },
+                        {
+                          "id": "uuid",
+                          "name": "Tepung",
+                          "category": "Bubuk",
+                          "unit": "Gram (GR)",
+                          "in_stock": "10000",
+                          "minimum_stock": "4000",
+                          "average_cost": "Rp. 100,00",
+                          "placements": [
+                            "Central Kitchen",
+                            "Outlet Cahaya Senja PIK"
+                          ]
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  },
+                  "success dengan search": {
+                    "summary": "Contoh berhasil dengan search",
+                    "description": "Berhasil dapatkan semua data raw ingredient dengan search",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "uuid",
+                          "name": "Daging ayam",
+                          "category": "Meat",
+                          "unit": "Gram (GR)",
+                          "in_stock": "2000",
+                          "minimum_stock": "1000",
+                          "average_cost": "Rp. 32.000,00",
+                          "placements": [
+                            "Central Kitchen",
+                            "Outlet Cahaya Senja PIK"
+                          ]
+                        },
+                        {
+                          "id": "uuid",
+                          "name": "Daging babi",
+                          "category": "Meat",
+                          "unit": "Gram (GR)",
+                          "in_stock": "10000",
+                          "minimum_stock": "4000",
+                          "average_cost": "Rp. 80.000,00",
+                          "placements": [
+                            "Central Kitchen",
+                            "Outlet Cahaya Senja PIK"
+                          ]
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  },
+                  "success tanpa data": {
+                    "summary": "Contoh berhasil saat di search tetapi tidak menghasil data",
+                    "value": {
+                      "data": {},
+                      "links": {},
+                      "meta": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Membuat raw ingredients baru",
+        "description": "Membuat master data raw ingredients baru",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 25
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                  },
+                  "category_id": {
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "unit_id": {
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "stock_alert": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "initial_stock": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "initial_average_cost": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "placements": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 36,
+                      "maxLength": 36
+                    }
+                  },
+                  "image": {
+                    "description": "Upload gambar raw ingredients",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "code",
+                  "name",
+                  "category_id",
+                  "unit_id",
+                  "placement"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "berhasil buat raw ingredient",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "success full request body": {
+                    "value": {
+                      "data": {
+                        "summary": "response dari full request body",
+                        "description": "response ini didapatkan saat request body dikirim secara full",
+                        "value": {
+                          "data": {
+                            "id": "ac816b53-2f82-4282-8266-39dbf9360589",
+                            "image": "https://localhost:8000/image/raw.jpg",
+                            "code": "RAW-INGREDIENTS-0001",
+                            "name": "Daging ayam",
+                            "category": {
+                              "id": "ac816b53-2f82-4282-8266-39dbf9360944",
+                              "name": "Daging"
+                            },
+                            "unit": {
+                              "id": "6361f552-de08-4a2e-ba45-183a67d5276b",
+                              "name": "Gram (GR)"
+                            },
+                            "stock_alert": 10,
+                            "initial_stock": 100,
+                            "initial_average_cost": 32.5,
+                            "placement": [
+                              "6191edbf-a978-44e6-86be-127a8cb3fa09"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "success half request body": {
+                    "summary": "response dari half request body",
+                    "description": "mengambalikan response saat initial stock & average cost tidak dikirim request",
+                    "value": {
+                      "data": {
+                        "id": "ac816b53-2f82-4282-8266-39dbf9360589",
+                        "image": "https://localhost:8000/image/raw.jpg",
+                        "code": "RAW-INGREDIENTS-0001",
+                        "name": "Daging ayam",
+                        "category": {
+                          "id": "ac816b53-2f82-4282-8266-39dbf9360944",
+                          "name": "Daging"
+                        },
+                        "unit": {
+                          "id": "6361f552-de08-4a2e-ba45-183a67d5276b",
+                          "name": "Gram (GR)"
+                        },
+                        "stock_alert": 10,
+                        "initial_stock": 0,
+                        "initial_average_cost": 0,
+                        "placement": [
+                          "6191edbf-a978-44e6-86be-127a8cb3fa09"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Ingredients"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      }
+    },
+    "/ingredients/semi-finishes": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Menampilkan daftar semi finish ingredients",
+        "description": "Menampilkan daftar semi finish ingredients secara lengkap berdasarkan fitur searching & filtering",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "Ambil berdsarkan pencarian",
+            "required": false,
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "cari berdasarkan nama": {
+                "summary": "cara berdasarkan nama",
+                "value": "Ayam cincang kecap"
+              },
+              "cari berdasarkan category": {
+                "summary": "cara berdasarkan category",
+                "value": "Ayam"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "menampilkan daftar semi finish ingredients, hasil dengan pencarian dan tanpa pencarian sama",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "hasil tanpa pencarian": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "asd2316b53-2f82-4282-8266-39dbf93601232",
+                          "code": "SFING0001",
+                          "name": "Ayam cincang kecap",
+                          "category": "Ayam",
+                          "unit": "Gram (Gr)",
+                          "stock_alert": "200",
+                          "total_ingredients": "10 Ingredients",
+                          "placements": [
+                            {
+                              "id": "",
+                              "name": ""
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ddd2316b53-2f82-4282-8266-39dbf93601232",
+                          "code": "SFING0002",
+                          "name": "Babi panggang",
+                          "category": "Babi",
+                          "unit": "Gram (Gr)",
+                          "stock_alert": "100",
+                          "total_ingredients": "10 Ingredients",
+                          "placements": [
+                            {
+                              "id": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  },
+                  "hasil dengan pencarian": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "asd2316b53-2f82-4282-8266-39dbf93601232",
+                          "code": "SFING0001",
+                          "name": "Ayam cincang kecap",
+                          "category": "Ayam",
+                          "unit": "Gram (Gr)",
+                          "stock_alert": "200",
+                          "total_ingredients": "10 Ingredients",
+                          "placements": [
+                            {
+                              "id": "",
+                              "name": ""
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ddd2316b53-2f82-4282-8266-39dbf93601232",
+                          "code": "SFING0010",
+                          "name": "Ayam giling",
+                          "category": "Ayam",
+                          "unit": "Gram (Gr)",
+                          "stock_alert": "1000",
+                          "total_ingredients": "9 Ingredients",
+                          "placements": [
+                            {
+                              "id": "",
+                              "name": ""
+                            }
+                          ]
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Membuat semi finish ingredients baru",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 25
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                  },
+                  "category_id": {
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "unit_id": {
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "stock_alert": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "semi_recipe": {
+                    "description": "buat resep baru saat membuat data semi finish, berisi outcoume dan ingredients (raw / semi ) yang digunakan",
+                    "type": "object",
+                    "minItems": 2,
+                    "properties": {
+                      "outcome": {
+                        "description": "nilai hasil jadi dari pengunaan resep",
+                        "type": "number",
+                        "required": true,
+                        "minimum": 1
+                      },
+                      "ingredients": {
+                        "type": "array",
+                        "required": true,
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "object",
+                          "minProperties": 1,
+                          "required": true,
+                          "properties": {
+                            "id": {
+                              "description": "id raw / semi finish ingredients",
+                              "required": true,
+                              "type": "string",
+                              "minLength": 36,
+                              "maxLength": 36
+                            },
+                            "usage": {
+                              "description": "jumlah pemakaian resep",
+                              "required": true,
+                              "type": "number",
+                              "minimum": 1
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "initial_stock": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "initial_average_cost": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "placements": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 36,
+                      "maxLength": 36,
+                      "uniqueItems": true
+                    }
+                  },
+                  "image": {
+                    "description": "Upload gambar semi finish ingredients",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "code",
+                  "name",
+                  "category_id",
+                  "unit_id",
+                  "placements"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sukses buat semi finish ingredient baru",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "full request body": {
+                    "summary": "full request body",
+                    "description": "response saat request body dikirim secara lengkap",
+                    "value": {
+                      "data": {
+                        "id": "ac816b53-2f82-4282-8266-39dbf93601231",
+                        "code": "CODE-SEMI-FINISH-001",
+                        "name": "Ayam Kecap",
+                        "category": {
+                          "id": "ac816b53-2f82-4282-8266-39dbf93601232",
+                          "name": "Ayam"
+                        },
+                        "unit": {
+                          "id": "ac816b53-2f82-4282-8266-39dbf93601233",
+                          "name": "Gram (GR)"
+                        },
+                        "stock_alert": 200,
+                        "recipe_id": "ac816b53-2f82-4282-8266-39dbf9360123323",
+                        "initial_stock": 100,
+                        "initial_avg_cost": 30.000,
+                        "placement": [
+                          "ac816b53-2f82-4282-8266-39dbf9360123310"
+                        ]
+                      }
+                    }
+                  },
+                  "half request body": {
+                    "summary": "half request body",
+                    "description": "response saat request body dikirim tidak full (tanpa menyertakan parameter required)",
+                    "value": {
+                      "data": {
+                        "id": "ac816b53-2f82-4282-8266-39dbf93601231",
+                        "code": "CODE-SEMI-FINISH-001",
+                        "name": "Ayam Kecap",
+                        "category": {
+                          "id": "ac816b53-2f82-4282-8266-39dbf93601232",
+                          "name": "Ayam"
+                        },
+                        "unit": {
+                          "id": "ac816b53-2f82-4282-8266-39dbf93601233",
+                          "name": "Gram (GR)"
+                        },
+                        "stock_alert": 0,
+                        "recipe_id": "ac816b53-2f82-4282-8266-39dbf9360123323",
+                        "initial_stock": 0,
+                        "initial_avg_cost": 0,
+                        "placement": [
+                          "ac816b53-2f82-4282-8266-39dbf9360123310"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Ingredients"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      }
+    },
+    "/ingredients/categories": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Menampilkan daftar category ingredients",
+        "description": "Menampilkan daftar category ingredients beserta query pencarian",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "Cari category",
+            "required": true,
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "search": {
+                "summary": "cari category berdasarkan category name",
+                "description": "cari category menggunakan nama",
+                "value": "Rice"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "sukses menampilkan daftar category, response menggunakan pencarian atau tanpa pencarian sama",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "semua category": {
+                    "summary": "semua category",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "CD816b53-2f82-4282-8266-39dbf93601232",
+                          "name": "Seafood"
+                        },
+                        {
+                          "id": "FE816b53-2f82-4282-8266-39dbf93601232",
+                          "name": "Daging"
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  },
+                  "category dengan pencarian": {
+                    "summary": "category dengan pencarian",
+                    "description": "cari category berdasarkan namanya (daging)",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "CD816b53-2f82-4282-8266-39dbf93601232",
+                          "name": "Daging Ayam"
+                        },
+                        {
+                          "id": "FE816b53-2f82-4282-8266-39dbf93601232",
+                          "name": "Daging Babi"
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Membuat category ingredients baru",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "required": true,
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100
+                  },
+                  "name": {
+                    "required": true,
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                  }
+                }
+              },
+              "examples": {
+                "valid": {
+                  "value": {
+                    "code": "UNIT-01",
+                    "name": "Daging"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sukses buat category baru",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Sukses buat category baru",
+                    "value": {
+                      "data": {
+                        "id": "GG816b53-2f82-4282-8266-39dbf93601232",
+                        "code": "UNIT-01",
+                        "name": "Daging"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "gagal buat category karena validasi tidak berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "not validate": {
+                    "summary": "Validasi gagal",
+                    "value": {
+                      "errors": {
+                        "code": [
+                          "The code field must be at least 5 characters."
+                        ],
+                        "name": [
+                          "The name field is required"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      }
+    },
+    "/ingredients/units": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Menampilkan daftar unit ingredient",
+        "description": "Menampilkan daftar unit ingredient serta penggunaan fitur searching",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "pencarian unit menggunakan query parameter",
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "search by name": {
+                "summary": "cari berdasarkan nama",
+                "value": "Gram"
+              },
+              "search by code": {
+                "summary": "cari berdasarkan code",
+                "value": "UNIT001"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "response yang menghasilkan daftar unit ingredient, response menggunakan pencarian atau tanpa pencarian sama",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "hasil tanpa pencarian": {
+                    "summary": "hasil tanpa pencarian",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "OPS16b53-2f82-4282-8266-39dbf93601232",
+                          "code": "UNIT001",
+                          "name": "Gram (GR)"
+                        },
+                        {
+                          "id": "LKA16b53-2f82-4282-8266-39dbf93601232",
+                          "code": "UNIT002",
+                          "name": "Mililiter (ML)"
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  },
+                  "hasil dengan pencarian": {
+                    "summary": "hasil dengan pencarian",
+                    "description": "Hasil pencarian saat diketik Mili",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "LKA16b53-2f82-4282-8266-39dbf93601232",
+                          "code": "Mililiter (ML)"
+                        },
+                        {
+                          "id": "DDD16b53-2f82-4282-8266-39dbf93601232",
+                          "code": "Milimeter (ML)"
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Membuat unit ingredient baru",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "required": true,
+                    "minLength": 5,
+                    "maxLength": 100
+                  },
+                  "name": {
+                    "type": "string",
+                    "required": true,
+                    "minLength": 2,
+                    "maxLength": 100
+                  }
+                }
+              },
+              "examples": {
+                "success": {
+                  "summary": "sukses buat unit baru",
+                  "value": {
+                    "code": "UNIT001",
+                    "name": "Milimeter"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sukses buat unit baru",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "success buat unit baru",
+                    "value": {
+                      "data": {
+                        "id": "CV816b53-2f82-4282-8266-39dbf93601232",
+                        "code": "UNIT001",
+                        "name": "Militer (ML)"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Gagal validasi pembuatan unit baru",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "failed": {
+                    "summary": "gagal validasi code",
+                    "value": {
+                      "errors": {
+                        "code": [
+                          "The code field is required"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ingredients/recipes/semi-finish": {
+      "get": {
+        "summary": "Menampilkan daftar semi finish good recipe",
+        "description": "Menampilkan daftar semi finish good recipe dengan fitur searching",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "cari semi finish qood recipes",
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "cari berdasarkan nama item": {
+                "description": "cari berdasarkan nama item semi finish",
+                "value": "Ayam cincang"
+              },
+              "cari berdasarkan code": {
+                "description": "cari berdasarkan nama kode resep",
+                "value": "SFGR0001"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "daftar resep semi finish good, response menggunakan pencarian atau tanpa pencarian sama",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "hasil tanpa pencarian": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "I21316b53-2f82-4282-8266-39dbf93601232",
+                          "code": "SFGR0001",
+                          "name": "Ayam cincang",
+                          "recipe_outcome": 1000,
+                          "unit": "Gram (gr)",
+                          "total_ingredients": "11 ingredients"
+                        },
+                        {
+                          "id": "1238adbja-2f82-4282-8266-39dbf93601232",
+                          "code": "SFGR0002",
+                          "name": "Mie",
+                          "recipe_outcome": 1000,
+                          "unit": "Gram (gr)",
+                          "total_ingredients": "7 ingredients"
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  },
+                  "hasil dengan pencarian": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "I21316b53-2f82-4282-8266-39dbf93601232",
+                          "code": "SFGR0001",
+                          "item_name": "Ayam cincang",
+                          "recipe_outcome": 1000,
+                          "unit": "Gram (gr)",
+                          "total_ingredients": "11 ingredients"
+                        },
+                        {
+                          "id": "1238adbja-2f82-4282-8266-39dbf93601232",
+                          "code": "SFGR0010",
+                          "item_name": "Ayam giling",
+                          "recipe_outcome": 1000,
+                          "unit": "Gram (gr)",
+                          "total_ingredients": "7 ingredients"
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "buat resep semi finish good baru",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "semi_finish_ingredient_id": {
+                    "required": true,
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "outcome": {
+                    "required": true,
+                    "type": "number",
+                    "minimum": 1
+                  },
+                  "ingredients": {
+                    "description": "isi dari properties ini adalah array dengan susunan id (raw / semi finish) dan usage",
+                    "required": true,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "minProperties": 2,
+                      "properties": {
+                        "ingredient_id": {
+                          "description": "id raw / semi finish ingredients",
+                          "required": true,
+                          "type": "string",
+                          "minLength": 36,
+                          "maxLength": 36
+                        },
+                        "usage": {
+                          "description": "jumlah pemakaian resep",
+                          "required": true,
+                          "type": "number",
+                          "minimum": 1
+                        }
+                      }
+                    },
+                    "minItems": 1
+                  }
+                }
+              },
+              "examples": {
+                "valid": {
+                  "summary": "contoh valid buat resep semi finish",
+                  "value": {
+                    "semi_finish_ingredient_id": "ac816b53-2f82-4282-8266-39dbf93601231",
+                    "outcome": 1000,
+                    "ingredients": [
+                      {
+                        "id": "asd51316b53-2f82-4282-8266-39dbf93601231",
+                        "usage": 60
+                      },
+                      {
+                        "id": "asd17912301-2f82-4282-8266-39dbf93601231",
+                        "usage": 90
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "sukses buat resep semi finish (not finish)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "sukses buat resep semi finish baru",
+                    "value": {
+                      "data": {
+                        "id": "",
+                        "code": "",
+                        "semi-finish": {
+                          "id": "",
+                          "name": ""
+                        },
+                        "recipes": [
+                          {
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "gagal buat resep semi finish karena validasi tidak sukses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "gagal validasi outcome": {
+                    "description": "gagal buat resep semi finish saat validasi gagal",
+                    "value": {
+                      "errors": {
+                        "outcome": [
+                          "The outcome field must be 1 or higher"
+                        ]
+                      }
+                    }
+                  },
+                  "gagal validasi ingredient usage": {
+                    "description": "gagal buat resep semi finish saat validasi array ingredients dengan key usage gagal",
+                    "value": {
+                      "errors": {
+                        "ingredients.0.usage": [
+                          "The amount used for the first ingredient (index 0) must be at least 1"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      }
+    },
+    "/ingredients/recipes/finish-good": {
+      "get": {
+        "summary": "Menampilkan daftar resep menu (finish good), beserta fitur searching",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          },
+          {
+            "description": "cari resep menu berdasrkan code, item name, variant, atau unit",
+            "schema": {
+              "type": "string"
+            },
+            "name": "q",
+            "in": "query",
+            "examples": {
+              "cari berdasrkan nama item": {
+                "value": "Nasi goreng"
+              },
+              "cari berdasrkan code": {
+                "value": "FGR0001"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "sukses dapatkan daftar resep menu (finish good)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "sukses dapatkan daftar resep": {
+                    "description": "Sukses dapatkan daftar resep tanpa pencarian atau menggunakan pencarian",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "DD816b53-2f82-4282-8266-39dbf93601231",
+                          "code": "FGR001",
+                          "name": "Nasi goreng",
+                          "variant": "Ayam",
+                          "total_ingredient": 7
+                        },
+                        {
+                          "id": "CC816b53-2f82-4282-8266-39dbf93601231",
+                          "code": "FGR002",
+                          "name": "Nasi goreng",
+                          "variant": "Babi",
+                          "total_ingredient": 8
+                        },
+                        {
+                          "id": "EE816b53-2f82-4282-8266-39dbf93601231",
+                          "code": "FGR003",
+                          "name": "Nasi goreng",
+                          "variant": "Sosis",
+                          "total_ingredient": 8
+                        },
+                        {
+                          "id": "GG816b53-2f82-4282-8266-39dbf93601231",
+                          "code": "FGR003",
+                          "name": "Chabihun",
+                          "variant": "Ayam",
+                          "total_ingredient": 12
+                        }
+                      ],
+                      "links": {
+                        "first": "https://example.com/api/users?page=1",
+                        "last": "https://example.com/api/users?page=5",
+                        "prev": null,
+                        "next": "https://example.com/api/users?page=2"
+                      },
+                      "meta": {
+                        "current_page": 1,
+                        "from": 1,
+                        "last_page": 5,
+                        "path": "https://example.com/api/users",
+                        "per_page": 10,
+                        "to": 10,
+                        "total": 50
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Membuat resep menu baru (finish good) dengan variant atau tanpa variant",
+        "description": "jika menggunakan variant maka properti menu_variant_id wajib diisi, jika tanpa variant maka cukup string kosong ('') ",
+        "tags": [
+          "Ingredients"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/authorization"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "menu_id": {
+                    "type": "string",
+                    "required": true,
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "menu_variant_id": {
+                    "description": "menu variant id tidak wajib jika menu tidak memiliki variant",
+                    "type": "string",
+                    "minLength": 36,
+                    "maxLength": 36
+                  },
+                  "ingredients": {
+                    "description": "isi dari properties ini adalah array dengan susunan id (raw / semi finish) dan usage",
+                    "required": true,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "minProperties": 2,
+                      "properties": {
+                        "ingredient_id": {
+                          "description": "id raw / semi finish ingredients",
+                          "required": true,
+                          "type": "string",
+                          "minLength": 36,
+                          "maxLength": 36
+                        },
+                        "usage": {
+                          "description": "jumlah pemakaian resep",
+                          "required": true,
+                          "type": "number",
+                          "minimum": 1
+                        }
+                      }
+                    },
+                    "minItems": 1
+                  }
+                }
+              },
+              "examples": {
+                "buat resep menu dengan variant": {
+                  "description": "buat resep menu baru jika menggunakan variant ada",
+                  "value": {
+                    "menu_id": "OGD816b53-2f82-4282-8266-39dbf93601231",
+                    "menu_variant_id": "GGD816b53-2f82-4282-8266-39dbf93601231",
+                    "ingredients": [
+                      {
+                        "id": "MNU816b53-2f82-4282-8266-39dbf93601231",
+                        "usage": 1000
+                      },
+                      {
+                        "id": "2MNU816b53-2f82-4282-8266-39dbf93601231",
+                        "usage": 1200
+                      }
+                    ]
+                  }
+                },
+                "buat resep menu tanpa variant": {
+                  "description": "buat resep menu baru tanpa variant",
+                  "value": {
+                    "menu_id": "OGD816b53-2f82-4282-8266-39dbf93601231",
+                    "menu_variant_id": "",
+                    "ingredients": [
+                      {
+                        "id": "MNU816b53-2f82-4282-8266-39dbf93601231",
+                        "usage": 1000
+                      },
+                      {
+                        "id": "2MNU816b53-2f82-4282-8266-39dbf93601231",
+                        "usage": 900
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Berhasil membuat resep menu (finish good) baru (belum selesai)"
+          },
+          "400": {
+            "description": "gagal buat resep menu (finish good) karena validasi gagal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "gagal validasi resep tidak ditentukan": {
+                    "description": "gagal buat resep menu (finish good) saat ingredient property dikirim dengan array kosong (lihat schema request body)",
+                    "value": {
+                      "errors": {
+                        "ingredients": [
+                          "The ingredients field must not empty"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}

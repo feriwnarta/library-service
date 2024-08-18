@@ -1,0 +1,9 @@
+POST http://localhost:8080/ingredients/categories
+Content-Type: application/json
+
+{
+  "name": "DAGING",
+  "code" : "DG03"
+}
+
+###
